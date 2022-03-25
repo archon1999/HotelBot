@@ -1,0 +1,5 @@
+django
+pyTelegramBotAPI
+bs4
+lxml
+django-ckeditor
