@@ -1,3 +1,7 @@
+'''
+Модуль для обработки всех типов сообщений, callback-ов в боте
+'''
+
 import os
 import datetime
 import traceback
@@ -13,6 +17,7 @@ from backend.models import Hotel, BotUser, Booking
 from backend.templates import Messages, Keys
 
 
+# Функция для получения информации об отеле
 def get_hotel_info(hotel: Hotel):
     return Messages.HOTEL.format(
         title=hotel.title,
@@ -21,6 +26,7 @@ def get_hotel_info(hotel: Hotel):
     )
 
 
+# Функция для получения байт-кода картинки отеля
 def get_hotel_image(hotel: Hotel):
     hotel_image_path = os.path.join(APP_DIR, hotel.image.name)
     with open(hotel_image_path, 'rb') as file:
@@ -29,6 +35,7 @@ def get_hotel_image(hotel: Hotel):
     return data
 
 
+# Функция-обработчик кнопки "Отели"
 def hotel_callback_query_handler(bot: TeleBot, call):
     call_type = CallTypes.parse_data(call.data)
     page = call_type.page
@@ -65,6 +72,7 @@ def hotel_callback_query_handler(bot: TeleBot, call):
         )
 
 
+# Функция-обработчик кнопки "Бронировать"
 def hotel_booking_callback_query_handler(bot: TeleBot, call):
     call_type = CallTypes.parse_data(call.data)
     hotel_id = call_type.hotel_id
@@ -77,6 +85,7 @@ def hotel_booking_callback_query_handler(bot: TeleBot, call):
     bot.send_message(chat_id, Messages.BOOKING_DATE)
 
 
+# Функция-обработчик в момент, когда задается дата бронирования
 def booking_date_message_handler(bot: TeleBot, message):
     chat_id = message.chat.id
     user = BotUser.objects.get(chat_id=chat_id)
@@ -97,6 +106,7 @@ def booking_date_message_handler(bot: TeleBot, message):
     user.save()
 
 
+# Функция-обработчик в момент, когда задается количество дней бронирования
 def booking_days_message_handler(bot: TeleBot, message):
     chat_id = message.chat.id
     try:
@@ -117,6 +127,7 @@ def booking_days_message_handler(bot: TeleBot, message):
         bot.send_message(chat_id, Messages.BOOKED)
 
 
+# Функция для получения информации о бронировании
 def get_booking_info(booking: Booking):
     return Messages.BOOKING.format(
         hotel_title=booking.hotel.title,
@@ -126,6 +137,7 @@ def get_booking_info(booking: Booking):
     )
 
 
+# Функция-обработчик кнопки "Бронирования"
 def booking_callback_query_handler(bot: TeleBot, call):
     chat_id = call.message.chat.id
     user = BotUser.objects.get(chat_id=chat_id)

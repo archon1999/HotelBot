@@ -1,10 +1,10 @@
-from tabnanny import verbose
 from django.db import models
 from ckeditor.fields import RichTextField
 from bs4 import BeautifulSoup
 from bs4.element import Tag, NavigableString
 
 
+# Класс для описания пользователя в боте
 class BotUser(models.Model):
     class State(models.IntegerChoices):
         NOTHING = 0
@@ -15,7 +15,8 @@ class BotUser(models.Model):
     first_name = models.CharField(max_length=255, verbose_name='Имя')
     last_name = models.CharField(max_length=255, null=True, blank=True)
     username = models.CharField(max_length=255, null=True, blank=True)
-    bot_state = models.IntegerField(default=State.NOTHING)
+    bot_state = models.IntegerField(default=State.NOTHING,
+                                    verbose_name='Состояние')
 
     def get_full_name(self):
         return ' '.join([self.first_name, self.last_name or ''])
@@ -28,6 +29,7 @@ class BotUser(models.Model):
         verbose_name_plural = 'Пользователи'
 
 
+# Класс для описания отеля в боте
 class Hotel(models.Model):
     hotels = models.Manager()
     title = models.CharField(max_length=255,
@@ -46,6 +48,7 @@ class Hotel(models.Model):
         return self.title
 
 
+# Класс для описания бронирование в боте
 class Booking(models.Model):
     bookings = models.Manager()
     hotel = models.ForeignKey(
@@ -68,6 +71,9 @@ class Booking(models.Model):
         verbose_name_plural = 'Бронирования'
 
 
+# Телеграм поддерживает некоторые теги
+# Эта функция нужна для удаления неподдерживаемых тегов
+
 def filter_tag(tag: Tag, ol_number=None):
     if isinstance(tag, NavigableString):
         text = tag
@@ -86,6 +92,7 @@ def filter_tag(tag: Tag, ol_number=None):
 
         html += filter_tag(child_tag, li_number)
 
+    # Поддерживаемые теги телеграмом
     format_tags = ['strong', 'em', 'pre', 'b', 'u', 'i', 'code']
     if tag.name in format_tags:
         return f'<{tag.name}>{html}</{tag.name}>'
@@ -132,11 +139,13 @@ class SmileManager(models.Manager):
         return super().get_queryset().filter(type=Template.Type.SMILE)
 
 
+# Класс для описания шаблона, используемые в боте
+# Шаблоны разделены на 3 категории
 class Template(models.Model):
     class Type(models.IntegerChoices):
-        MESSAGE = 1
-        KEY = 2
-        SMILE = 3
+        MESSAGE = 1, 'Сообщение'
+        KEY = 2, 'Кнопка'
+        SMILE = 3, 'Смайлик'
 
     templates = models.Manager()
     messages = MessageManager()

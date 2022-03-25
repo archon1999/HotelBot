@@ -1,3 +1,9 @@
+'''
+Модуль для описания триггеров в базе данных
+Если изменится что-то в таблице шаблонов,
+то заново генерируется файл templates.py
+'''
+
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 

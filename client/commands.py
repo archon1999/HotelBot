@@ -1,3 +1,7 @@
+'''
+Модуль предназначен для обработки команд в боте
+'''
+
 from telebot import TeleBot, types
 
 from backend.templates import Messages, Keys
@@ -6,6 +10,7 @@ import utils
 from call_types import CallTypes
 
 
+# Функция обработки команды /start
 def start_command_handler(bot: TeleBot, message):
     chat_id = message.chat.id
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -30,6 +35,7 @@ def start_command_handler(bot: TeleBot, message):
                      reply_markup=keyboard)
 
 
+# Функция обработки команды /menu
 def menu_message_handler(bot: TeleBot, message):
     chat_id = message.chat.id
     hotels_button = utils.make_inline_button(

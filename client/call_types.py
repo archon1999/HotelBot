@@ -1,4 +1,11 @@
+'''
+Модуль предназначен для описания классов встроенных кнопок
+Каждая встроенная кнопка является отдельным классом
+'''
+
+
 class CallTypeMeta(type):
+    "Метакласс для создания классов встроенных кнопок"
     def __new__(cls, name, *args):
         def __init__(self, **kwargs):
             assert(len(args) == len(kwargs))
@@ -33,8 +40,10 @@ class CallTypes():
     CLASS_NAME = 'type'
 
     Menu = CallTypeMeta('Menu')
-    Hotel = CallTypeMeta('Hotel', 'page__int')
+    Hotel = CallTypeMeta('Hotel', 'page__int')  # Кнопка для отеля
+    # Кнопка для просмотра бронированных отелей
     Booking = CallTypeMeta('Booking', 'page__int')
+    # Кнопка для бронирования отеля
     HotelBooking = CallTypeMeta('HotelBooking', 'hotel_id__int')
 
     Nothing = CallTypeMeta('Nothing')
